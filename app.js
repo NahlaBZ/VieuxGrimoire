@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const User = require('./models/User');
+const Book = require('./models/Book');
 
+//Connexion à la base de données
 mongoose.connect('mongodb+srv://benzidnahla:CmFU3hINzGPsfe6F@cluster0.uccivn5.mongodb.net/?retryWrites=true&w=majority',
     {
         useNewUrlParser: true,
@@ -11,23 +14,40 @@ mongoose.connect('mongodb+srv://benzidnahla:CmFU3hINzGPsfe6F@cluster0.uccivn5.mo
 
 const app = express();
 
-app.use((req, res, next) => {
-    console.log('Requête reçue !');
-    next();
+//Création d'utilisateur
+app.post('/api/user', (req, res, next) => {
+    delete req.body._id;
+    const user = new User({
+        ...req.body
+    });
+    user.save()
+        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
+        .catch(error => res.status(400).json({ error }));
 });
 
-app.use((req, res, next) => {
-    res.status(201);
-    next();
+//Obtenir la liste des utilisateurs
+app.use('/api/users', (req, res, next) => {
+    User.find()
+        .then(users => res.status(200).json(users))
+        .catch(error => res.status(400).json({ error }));
 });
 
-app.use((req, res, next) => {
-    res.json({ message: 'Votre requête a bien été reçue !' });
-    next();
+//Création d'un livre
+app.post('/api/book', (req, res, next) => {
+    delete req.body._id;
+    const book = new Book({
+        ...req.body
+    });
+    book.save()
+        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
+        .catch(error => res.status(400).json({ error }));
 });
 
-app.use((req, res, next) => {
-    console.log('Réponse envoyée avec succès !');
+//Obtenir la liste des livres
+app.use('/api/books', (req, res, next) => {
+    Book.find()
+        .then(books => res.status(200).json(books))
+        .catch(error => res.status(400).json({ error }));
 });
 
 module.exports = app;
