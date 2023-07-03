@@ -2,9 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/User');
 const Book = require('./models/Book');
-
+require('dotenv').config()
+console.log(process.env)
 //Connexion à la base de données
-mongoose.connect('mongodb+srv://benzidnahla:CmFU3hINzGPsfe6F@cluster0.uccivn5.mongodb.net/?retryWrites=true&w=majority',
+mongoose.connect(`mongodb+srv://${process.env.MANGOOSE_USERNAME}:${process.env.MANGOOSE_PASSWORD}@${process.env.MANGOOSE_CLUSTER}/?retryWrites=true&w=majority`,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
