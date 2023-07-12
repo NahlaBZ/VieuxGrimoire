@@ -1,10 +1,17 @@
 const express = require('express');
+const app = express();
 const mongoose = require('mongoose');
-const User = require('./models/User');
-const Book = require('./models/Book');
-require('dotenv').config()
-console.log(process.env)
-//Connexion à la base de données
+
+const userRoutes = require('./routes/user');
+const path = require('path');
+require('dotenv').config();
+//console.log(process.env);
+const rateLimit = require('express-rate-limit');
+
+
+
+
+// connexion à ma base de données
 mongoose.connect(`mongodb+srv://${process.env.MANGOOSE_USERNAME}:${process.env.MANGOOSE_PASSWORD}@${process.env.MANGOOSE_CLUSTER}/?retryWrites=true&w=majority`,
     {
         useNewUrlParser: true,
@@ -13,42 +20,28 @@ mongoose.connect(`mongodb+srv://${process.env.MANGOOSE_USERNAME}:${process.env.M
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch((e) => console.log('Connexion à MongoDB échouée !\n' + e.stack));
 
-const app = express();
-
-//Création d'utilisateur
-app.post('/api/user', (req, res, next) => {
-    delete req.body._id;
-    const user = new User({
-        ...req.body
-    });
-    user.save()
-        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
-        .catch(error => res.status(400).json({ error }));
+// fonction pour limiter le nombre de requetes à 10 sur 1 min
+const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 30, // 20 requêtes maximum par minute
+    message: 'Trop de requêtes effectuées. Réessayer plus tard.'
 });
 
-//Obtenir la liste des utilisateurs
-app.use('/api/users', (req, res, next) => {
-    User.find()
-        .then(users => res.status(200).json(users))
-        .catch(error => res.status(400).json({ error }));
+//app.use(limiter);
+
+// Nous mets à disposition le contenu de toutes les requetes qui contiennet du JSON
+app.use(express.json());
+
+// Gestion des CORS pour toutes les routes
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
 });
 
-//Création d'un livre
-app.post('/api/book', (req, res, next) => {
-    delete req.body._id;
-    const book = new Book({
-        ...req.body
-    });
-    book.save()
-        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
-        .catch(error => res.status(400).json({ error }));
-});
 
-//Obtenir la liste des livres
-app.use('/api/books', (req, res, next) => {
-    Book.find()
-        .then(books => res.status(200).json(books))
-        .catch(error => res.status(400).json({ error }));
-});
+app.use('/api/auth', userRoutes);
+
 
 module.exports = app;
