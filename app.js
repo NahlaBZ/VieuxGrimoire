@@ -6,7 +6,7 @@ const userRoutes = require('./routes/user');
 const path = require('path');
 require('dotenv').config();
 //console.log(process.env);
-const rateLimit = require('express-rate-limit');
+
 
 
 
@@ -20,17 +20,6 @@ mongoose.connect(`mongodb+srv://${process.env.MANGOOSE_USERNAME}:${process.env.M
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch((e) => console.log('Connexion à MongoDB échouée !\n' + e.stack));
 
-// fonction pour limiter le nombre de requetes à 10 sur 1 min
-const limiter = rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    max: 30, // 20 requêtes maximum par minute
-    message: 'Trop de requêtes effectuées. Réessayer plus tard.'
-});
-
-//app.use(limiter);
-
-// Nous mets à disposition le contenu de toutes les requetes qui contiennet du JSON
-app.use(express.json());
 
 // Gestion des CORS pour toutes les routes
 app.use((req, res, next) => {
