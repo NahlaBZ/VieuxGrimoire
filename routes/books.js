@@ -1,14 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const Ctrlbooks = require('../controllers/Book');
+const booksCtrl = require('../controllers/Book');
 const auth = require('../middleware/auth');
 
-router.post('/', auth, Ctrlbooks.createBook);
-router.post('/:id/rating');
-router.put('/:id');
-router.delete('/:id');
-router.get('/bestrating');
-router.get('/:id');
-router.get('/');
+router.post('/', auth, booksCtrl.createBook);
+router.get('/:id', booksCtrl.getOneBook);
+router.get('/', booksCtrl.getAllBooks);
 
 module.exports = router;

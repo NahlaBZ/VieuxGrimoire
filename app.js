@@ -2,17 +2,11 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const booksRoutes = require('./routes/books');
-
 const userRoutes = require('./routes/user');
-const path = require('path');
 require('dotenv').config();
-//console.log(process.env);
 
 
-
-
-
-// connexion à ma base de données
+/// connexion à ma base de données
 mongoose.connect(`mongodb+srv://${process.env.MANGOOSE_USERNAME}:${process.env.MANGOOSE_PASSWORD}@${process.env.MANGOOSE_CLUSTER}/?retryWrites=true&w=majority`,
     {
         useNewUrlParser: true,
@@ -22,6 +16,12 @@ mongoose.connect(`mongodb+srv://${process.env.MANGOOSE_USERNAME}:${process.env.M
     .catch((e) => console.log('Connexion à MongoDB échouée !\n' + e.stack));
 
 
+
+//app.use(limiter);
+
+// Nous mets à disposition le contenu de toutes les requetes qui contiennet du JSON
+app.use(express.json());
+
 // Gestion des CORS pour toutes les routes
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -30,8 +30,8 @@ app.use((req, res, next) => {
     next();
 });
 
-
-app.use('/api/auth', userRoutes);
 app.use('/api/books', booksRoutes);
+app.use('/api/auth', userRoutes);
+
 
 module.exports = app;
