@@ -16,10 +16,6 @@ mongoose.connect(`mongodb+srv://${process.env.MANGOOSE_USERNAME}:${process.env.M
     .catch((e) => console.log('Connexion à MongoDB échouée !\n' + e.stack));
 
 
-
-//app.use(limiter);
-
-// Nous mets à disposition le contenu de toutes les requetes qui contiennet du JSON
 app.use(express.json());
 
 // Gestion des CORS pour toutes les routes
