@@ -5,11 +5,12 @@ const auth = require('../middleware/auth');
 
 
 router.post('/', auth, booksCtrl.createBook);
-router.get('/:id', booksCtrl.getOneBook);
+router.post('/:id/rating', auth, booksCtrl.addRating);
+router.put('/:id', auth, booksCtrl.modifyBook);
 router.delete('/:id', auth, booksCtrl.deleteBook);
+router.get('/bestrating', booksCtrl.getBestBooks);
+router.get('/:id', booksCtrl.getOneBook);
 router.get('/', booksCtrl.getAllBooks);
 
 module.exports = router;
-
-
 

@@ -102,18 +102,17 @@ exports.addRating = (req, res, next) => {
             if (!book) {
                 res.status(404).json({ message: 'Livre inconnu' });
             } else {
-                // On vérifie si l'utilisateur a déja noté le livre
+
                 const userRating = book.ratings.includes(rating => rating.userId == req.body.userId);
                 if (userRating) {
-                    // s'il l'a déja noté, message d'erreur
+
                     res.status(404).json({ message: 'Vous avez déja noté ce livre' });
                 } else {
-                    // sinon on ajoute la nouvelle note au tableau
                     Book.updateOne({ _id: req.params.id }, { $push: { ratings: ratingObject } })
                         .then(() => {
                             Book.findOne({ _id: req.params.id })
                                 .then(book => {
-                                    // on recalcule la moyenne
+
                                     const somme = book.ratings.reduce((acc, rating) => acc + rating.grade, 0);
                                     book.averageRating = Math.round(somme / book.ratings.length);
 
@@ -136,5 +135,12 @@ exports.addRating = (req, res, next) => {
         .catch(error => { res.status(500).json({ error }) });
 }
 
+exports.getBestBooks = (req, res, next) => {
+    Book.find()
+        .sort({ averageRating: -1 })
+        .limit(3) // Limite les résultats aux 3 premiers livres
+        .then(books => res.status(200).json(books))
+        .catch(error => res.status(400).json({ error }));
+};
 
 
