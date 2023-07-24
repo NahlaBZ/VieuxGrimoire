@@ -1,4 +1,4 @@
-// package pour gérer les fichiers
+
 const multer = require('multer');
 const sharp = require('sharp');
 const fs = require('fs');
@@ -10,11 +10,11 @@ const MIME_TYPES = {
 };
 
 const storage = multer.diskStorage({
-    // destination de stockage des fichiers
+
     destination: (req, file, callback) => {
         callback(null, 'images')
     },
-    // nom du fichier afin qu'il soit unique
+
     filename: (req, file, callback) => {
         const name = file.originalname.replace(' ', '_');
         const extension = MIME_TYPES[file.mimetype];
@@ -25,28 +25,28 @@ const storage = multer.diskStorage({
 module.exports = multer({ storage }).single('image');
 
 const convertToWebp = (req, res, next) => {
-    // Je vérifie si une image a été chargé et si un chemin existe
+
     if (req.file && req.file.path) {
         const originalImagePath = req.file.path;
-        // je remplace l'extension par webp
+
         const outputPath = req.file.path.replace(/\.[^.]+$/, '.webp');
 
-        // Utilisation de la biblio sharp pour convertir l'image et la sauvegarder
+
         sharp(originalImagePath)
             .toFormat('webp')
             .resize({
                 width: 800,
                 height: 800,
                 fit: 'contain'
-            })// redimension des images
+            })
             .toFile(outputPath)
             .then(() => {
-                // Je vérifie si le fichier d'origine existe pour le supprimer
+
                 if (fs.existsSync(originalImagePath)) {
                     console.log('Image file exists !!!');
                     fs.unlinkSync(originalImagePath);
                 }
-                // mise à jour du chemin du fichier
+
                 console.log('Path image: ' + req.file.path);
                 req.file.path = outputPath.replace('images\\', '');
 
@@ -57,7 +57,7 @@ const convertToWebp = (req, res, next) => {
                 next();
             });
     } else {
-        // si aucune image, je passe au middleware suivant
+
         next();
     }
 };
