@@ -77,13 +77,11 @@ exports.modifyBook = (req, res, next) => {
                 const bookObject = {
                     ...req.body
                 };
-                if (book.userId != req.auth.userId) {
-                    res.status(401).json({ message: 'Non-autorisé' });
-                } else {
-                    Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
-                        .then(() => res.status(200).json({ message: 'Livre modifié !' }))
-                        .catch(error => { res.status(400).json({ error }) })
-                }
+
+                Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
+                    .then(() => res.status(200).json({ message: 'Livre modifié !' }))
+                    .catch(error => { res.status(400).json({ error }) })
+
             }
         })
         .catch((error) => {

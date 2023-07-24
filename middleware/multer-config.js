@@ -28,7 +28,6 @@ const convertToWebp = (req, res, next) => {
 
     if (req.file && req.file.path) {
         const originalImagePath = req.file.path;
-
         const outputPath = req.file.path.replace(/\.[^.]+$/, '.webp');
 
 
