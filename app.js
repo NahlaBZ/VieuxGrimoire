@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const booksRoutes = require('./routes/books');
 const userRoutes = require('./routes/user');
 require('dotenv').config();
+const path = require('path');
 
 
 /// connexion à ma base de données
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 
 app.use('/api/books', booksRoutes);
 app.use('/api/auth', userRoutes);
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 
 module.exports = app;
