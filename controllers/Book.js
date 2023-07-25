@@ -39,7 +39,7 @@ exports.getAllBooks = (req, res, next) => {
 exports.deleteBook = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
         .then(book => {
-            // vérification si l'utilisateur peut supprimer le livre
+
             if (book.userId != req.auth.userId) {
                 res.status(401).json({ message: 'Non-autorisé' });
             } else {
@@ -136,7 +136,7 @@ exports.addRating = (req, res, next) => {
 exports.getBestBooks = (req, res, next) => {
     Book.find()
         .sort({ averageRating: -1 })
-        .limit(3) // Limite les résultats aux 3 premiers livres
+        .limit(3)
         .then(books => res.status(200).json(books))
         .catch(error => res.status(400).json({ error }));
 };
