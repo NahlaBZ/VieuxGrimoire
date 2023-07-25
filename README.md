@@ -19,17 +19,3 @@ Paramétrez votre BDD
 Accédez au site web de MongoDB - https://account.mongodb.com/ - et inscrivez-vous pour obtenir un compte. Une fois que vous avez accès à votre tableau de bord, créez un cluster puis configurez-le. 
 
 Récupérez votre code URI sur MongoDB et ajoutez-le dans un fichier .env que vous créez (exemple du contenu dans le fichier .example.env, dans le dossier backend). 
-
- 
-
-Pour tester les fonctionnalités, voici les informations de connexion : 
- 
-Utilisateur 1 : 
-Adresse e-mail : user1@gmail.com 
-Mot de passe : User-123 
- 
-Utilisateur 2 : 
-Adresse e-mail : user2@gmail.com 
-Mot de passe : User-456 
- 
-Vous pouvez également créer votre propre compte en utilisant la fonctionnalité "S'inscrire". 
