@@ -34,7 +34,7 @@ exports.getOneBook = (req, res, next) => {
 exports.getAllBooks = (req, res, next) => {
     Book.find()
         .then(books => res.status(200).json(books))
-        .catch(error => res.status(400).json({ error }));
+        .catch(error => res.status(404).json({ error }));
 };
 exports.deleteBook = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
@@ -70,7 +70,7 @@ exports.modifyBook = (req, res, next) => {
                 fs.unlink(`images/${fileToDelete}`, () => {
                     Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
                         .then(() => res.status(200).json({ message: 'Livre modifié !' }))
-                        .catch(error => { res.status(400).json({ error }) })
+                        .catch(error => { res.status(401).json({ error }) })
                 });
 
             } else {
@@ -80,7 +80,7 @@ exports.modifyBook = (req, res, next) => {
 
                 Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
                     .then(() => res.status(200).json({ message: 'Livre modifié !' }))
-                    .catch(error => { res.status(400).json({ error }) })
+                    .catch(error => { res.status(401).json({ error }) })
 
             }
         })
@@ -104,7 +104,7 @@ exports.addRating = (req, res, next) => {
                 const userRating = book.ratings.includes(rating => rating.userId == req.body.userId);
                 if (userRating) {
 
-                    res.status(404).json({ message: 'Vous avez déja noté ce livre' });
+                    res.status(405).json({ message: 'Vous avez déja noté ce livre' });
                 } else {
                     Book.updateOne({ _id: req.params.id }, { $push: { ratings: ratingObject } })
                         .then(() => {
@@ -120,13 +120,13 @@ exports.addRating = (req, res, next) => {
                                                 .then(book => {
                                                     res.status(200).json(book)
                                                 })
-                                                .catch(error => res.status(404).json({ error }));
+                                                .catch(error => res.status(500).json({ error }));
                                         })
                                         .catch(error => res.status(401).json({ error }));
                                 })
-                                .catch(error => res.status(404).json({ error }));
+                                .catch(error => res.status(500).json({ error }));
                         })
-                        .catch(error => res.status(400).json({ error }));
+                        .catch(error => res.status(401).json({ error }));
                 }
             }
         })
